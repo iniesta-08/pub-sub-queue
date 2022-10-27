@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Queue {
-    private Map<Topic, TopicHandler> topicHandler;
+    private final Map<Topic, TopicHandler> topicHandler;
 
     public Queue() {
         this.topicHandler = new HashMap<>();
@@ -25,11 +25,11 @@ public class Queue {
     }
 
     private void startPublishing(Topic topic) {
-        new Thread(() -> {
-            topicHandler.get(topic).publish();}).start();
+        new Thread(() -> topicHandler.get(topic).publish()).start();
     }
 
     public void subscribeToTopic(Topic topic, Subscriber subscriber) {
         topic.addSubscriber(new TopicSubscriber(topic, subscriber));
+        startPublishing(topic);
     }
 }
